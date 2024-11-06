@@ -19,6 +19,7 @@ import com.razorpay.PaymentResultWithDataListener
 import org.json.JSONObject
 import android.app.AlertDialog
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 
 
 
@@ -51,15 +52,18 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
             val amount = amountEditText.text.toString().toIntOrNull()
             if (amount != null && amount > 0) {
 //              add token check here
-                showPinDialog { pin ->
+//                showPinDialog { pin ->
+                val pin = "123456"
                     val isConnected = isUsbTokenConnected(pin)
                     if (!isConnected) {
-//                        Toast.makeText(this, "Failed to connect to USB Token", Toast.LENGTH_SHORT).show()
-                        return@showPinDialog
+                        Toast.makeText(this, "Failed to connect to USB Token", Toast.LENGTH_SHORT).show()
+//                        return@showPinDialog
                     }
-                    // Use the entered PIN here
-                    paymentManager.initPayment(amount, "Demo Payment")
-                }
+                    else {
+                        // Use the entered PIN here
+                        paymentManager.initPayment(amount, "Demo Payment")
+                    }
+//                }
 //                paymentManager.initPayment(amount, "Demo Payment")
             } else {
                 Toast.makeText(this, "Enter a valid amount", Toast.LENGTH_SHORT).show()
@@ -113,16 +117,17 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
             }
             Log.d("MainActivity", resp.toString())
             Log.d("MainActivity", "Login called")
-            val res = login(pin)
-            Log.d("MainActivity", res)
-            if (res=="Login Success") {
-                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
-                return true
-            }
-            else {
-                Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show()
-                return false
-            }
+//            val res = login(pin)
+//            Log.d("MainActivity", res)
+//            if (res=="Login Success") {
+//                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+//                return true
+//            }
+//            else {
+//                Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show()
+//                return false
+//            }
+            return true
         }
     }
     fun detectSmartCard(): Int {
@@ -138,10 +143,10 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             PendingIntent.FLAG_IMMUTABLE
                         )
 
-                    usbManager.requestPermission(device, permissionIntent)
-//                    while (!usbManager.hasPermission(device)) {
 //                    usbManager.requestPermission(device, permissionIntent)
-//                    }
+                    while (!usbManager.hasPermission(device)) {
+                    usbManager.requestPermission(device, permissionIntent)
+                    }
 //                    Thread.sleep(5000)
                     if (usbManager.hasPermission(device)) {
                         // check the extra permission
