@@ -106,7 +106,6 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
             return false
         }
         else{
-            Log.d("MainActivity", fileDescriptor.toString())
             val resp = libint(fileDescriptor)
             if (resp != 0) {
                 Toast.makeText(this, "Error occurred while connecting to USB Token", Toast.LENGTH_SHORT).show()
@@ -114,17 +113,16 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
             }
             Log.d("MainActivity", resp.toString())
             Log.d("MainActivity", "Login called")
-            return true
-//            val res = login(pin)
-//            Log.d("MainActivity", res)
-//            if (res=="Login Success") {
-//                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
-//                return true
-//            }
-//            else {
-//                Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show()
-//                return false
-//            }
+            val res = login(pin)
+            Log.d("MainActivity", res)
+            if (res=="Login Success") {
+                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+                return true
+            }
+            else {
+                Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show()
+                return false
+            }
         }
     }
     fun detectSmartCard(): Int {

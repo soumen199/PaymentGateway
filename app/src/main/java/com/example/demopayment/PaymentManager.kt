@@ -8,7 +8,7 @@ import org.json.JSONObject
 class PaymentManager(private val activity: Activity) {
 
     private val checkout = Checkout().apply {
-        setKeyID("rzp_test_ZdpCPJ56zNtCwJ")  // Your Razorpay Test Key
+        setKeyID("rzp_test_Nqy8gmPWtyPySL")  // Your Razorpay Test Key
     }
 
     fun initPayment(amount: Int, description: String) {
