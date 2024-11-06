@@ -4,6 +4,7 @@
 #include "cryptoki.h"
 #include <sstream>
 #include <iomanip>
+#include "android/log.h"
 
 typedef int(*Connect_usb) (int);
 typedef CK_RV (*Initialize)(CK_VOID_PTR);
@@ -64,8 +65,11 @@ Java_com_example_demopayment_MainActivity_libint(JNIEnv *env, jobject mainActivi
 
 JNIEXPORT jstring JNICALL
 Java_com_example_demopayment_MainActivity_login(JNIEnv *env, jobject mainActivityInstance, jstring jStr) {
-    cleanUp();
+    __android_log_print(ANDROID_LOG_ERROR, "NativeLib login", "Login called");
+//    cleanUp();
+    __android_log_print(ANDROID_LOG_ERROR, "NativeLib login 2", "Login called");
     const char *token_pin = env->GetStringUTFChars(jStr, nullptr);
+    __android_log_print(ANDROID_LOG_ERROR, "NativeLib login 3", "Login called");
 
     dlhandle = dlopen("liblsusbdemo.so", RTLD_LAZY);
     if (dlhandle == NULL) {
@@ -77,34 +81,43 @@ Java_com_example_demopayment_MainActivity_login(JNIEnv *env, jobject mainActivit
     OpenSession c_openSession = (OpenSession) dlsym(dlhandle, "C_OpenSession");
     Login c_login = (Login) dlsym(dlhandle, "C_Login");
 
+    __android_log_print(ANDROID_LOG_ERROR, "NativeLib login 4", "Login called");
     if (!c_initialize || !getSlotList || !c_openSession || !c_login) {
-        cleanUp();
+        __android_log_print(ANDROID_LOG_ERROR, "NativeLib login", "Failed to find symbols");
+//        cleanUp();
         return env->NewStringUTF("Failed to find symbols");
     }
 
     CK_RV rv = c_initialize(NULL);
     if (rv != CKR_OK) {
-        cleanUp();
+        __android_log_print(ANDROID_LOG_ERROR, "NativeLib initialize", "Error code: %lu", rv);
+//        cleanUp();
         return env->NewStringUTF("Failed to initialize PKCS#11");
     }
+    __android_log_print(ANDROID_LOG_ERROR, "NativeLib login 5", "Login called");
 
     CK_SLOT_ID slotlist[10];
-    CK_ULONG no_of_slots;
+    CK_ULONG no_of_slots = 0;
     rv = getSlotList(CK_TRUE, slotlist, &no_of_slots);
+    __android_log_print(ANDROID_LOG_ERROR, "NativeLib login 6", "Login called");
     if (rv != CKR_OK) {
-        cleanUp();
+        __android_log_print(ANDROID_LOG_ERROR, "NativeLib getslotlist", "Error code: %lu", rv);
+//        cleanUp();
         return env->NewStringUTF("Failed to get total slots");
     }
+    __android_log_print(ANDROID_LOG_ERROR, "NativeLib login 7", "Login called");
 
     rv = c_openSession(slotlist[0], CKF_SERIAL_SESSION | CKF_RW_SESSION, NULL, NULL, &hSession);
     if (rv != CKR_OK) {
-        cleanUp();
+        __android_log_print(ANDROID_LOG_ERROR, "NativeLib opensession", "Error code: %lu", rv);
+//        cleanUp();
         return env->NewStringUTF("Failed to create session");
     }
 
     rv = c_login(hSession, CKU_USER, (CK_UTF8CHAR_PTR) token_pin, strlen((const char *) token_pin));
     if (rv != CKR_OK) {
-        cleanUp();
+        __android_log_print(ANDROID_LOG_ERROR, "NativeLib login", "Error code: %lu", rv);
+//        cleanUp();
         return env->NewStringUTF("Failed to login");
     }
 
@@ -199,29 +212,29 @@ Java_com_example_demopayment_MainActivity_logout(JNIEnv *env, jobject thiz) {
     Finalize finalize = (Finalize) dlsym(dlhandle, "C_Finalize");
 
     if (!logout || !closeSession || !finalize) {
-        cleanUp();
+//        cleanUp();
         return env->NewStringUTF("Failed to find symbols");
     }
 
     CK_RV rv = logout(hSession);
     if (rv != CKR_OK) {
-        cleanUp();
+//        cleanUp();
         return env->NewStringUTF("Failed to logout");
     }
 
     rv = closeSession(hSession);
     if (rv != CKR_OK) {
-        cleanUp();
+//        cleanUp();
         return env->NewStringUTF("Failed to close session");
     }
 
     rv = finalize(NULL_PTR);
     if (rv != CKR_OK) {
-        cleanUp();
+//        cleanUp();
         return env->NewStringUTF("Failed to finalize");
     }
 
-    cleanUp();
+//    cleanUp();
     return env->NewStringUTF("Logged out Successfully");
 }
 }
