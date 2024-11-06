@@ -52,18 +52,17 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
             val amount = amountEditText.text.toString().toIntOrNull()
             if (amount != null && amount > 0) {
 //              add token check here
-//                showPinDialog { pin ->
-                val pin = "123456"
+                showPinDialog { pin ->
                     val isConnected = isUsbTokenConnected(pin)
                     if (!isConnected) {
                         Toast.makeText(this, "Failed to connect to USB Token", Toast.LENGTH_SHORT).show()
-//                        return@showPinDialog
+                        return@showPinDialog
                     }
-                    else {
+//                    else {
                         // Use the entered PIN here
                         paymentManager.initPayment(amount, "Demo Payment")
-                    }
-//                }
+//                    }
+                }
 //                paymentManager.initPayment(amount, "Demo Payment")
             } else {
                 Toast.makeText(this, "Enter a valid amount", Toast.LENGTH_SHORT).show()
@@ -93,10 +92,24 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
     override fun onPaymentSuccess(razorpayPaymentID: String?, paymentData: PaymentData?) {
         Toast.makeText(this, "Payment Successful: ID - $razorpayPaymentID", Toast.LENGTH_SHORT).show()
+        val res = logout()
+        if (res=="Logged out Successfully") {
+            Toast.makeText(this, "Logout Successful", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            Toast.makeText(this, "Failed to logout", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onPaymentError(errorCode: Int, errorDescription: String?, paymentData: PaymentData?) {
         Toast.makeText(this, "Payment Failed: $errorDescription (Code: $errorCode)", Toast.LENGTH_LONG).show()
+        val res = logout()
+        if (res=="Logged out Successfully") {
+            Toast.makeText(this, "Logout Successful", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            Toast.makeText(this, "Failed to logout", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun isUsbTokenConnected(pin: String): Boolean {
@@ -117,17 +130,17 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
             }
             Log.d("MainActivity", resp.toString())
             Log.d("MainActivity", "Login called")
-//            val res = login(pin)
-//            Log.d("MainActivity", res)
-//            if (res=="Login Success") {
-//                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
-//                return true
-//            }
-//            else {
-//                Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show()
-//                return false
-//            }
-            return true
+            val res = login(pin)
+            Log.d("MainActivity", res)
+            if (res=="Login Success") {
+                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+                return true
+            }
+            else {
+                Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show()
+                return false
+            }
+//            return true
         }
     }
     fun detectSmartCard(): Int {
