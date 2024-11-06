@@ -7,9 +7,19 @@ android {
     namespace = "com.example.demopayment"
     compileSdk = 34
 
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("src/main/kotlin")
+            jniLibs.srcDirs("src/main/jniLibs")
+        }
+    }
+
     defaultConfig {
         applicationId = "com.example.demopayment"
-        minSdk = 24
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+        }
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -17,6 +27,18 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+//        externalNativeBuild {
+//            cmake {
+//                cppFlags("")
+//            }
+//        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = File("src/main/cpp/CMakeLists.txt")
         }
     }
 
@@ -47,6 +69,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    ndkVersion = "26.3.11579264"
+    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
