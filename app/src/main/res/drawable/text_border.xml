@@ -1,0 +1,8 @@
+<!-- res/drawable/text_border.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/transparent" /> <!-- Transparent background -->
+    <stroke
+        android:width="2dp"
+        android:color="#000000" /> <!-- Black border with 2dp width -->
+    <corners android:radius="4dp" /> <!-- Optional: Rounds the corners slightly -->
+</shape>
